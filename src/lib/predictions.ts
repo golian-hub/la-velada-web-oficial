@@ -14,7 +14,7 @@ interface MemoryCache {
   allPredictions: CacheEntry<CombatPrediction[]> | null
 }
 
-const CACHE_DURATION = 30 * 1000 // 30 segundos en milisegundos
+const CACHE_DURATION = 60 * 1000 // 60 segundos en milisegundos
 let memoryCache: MemoryCache = {
   predictionsByCombat: {},
   allPredictions: null,
@@ -373,7 +373,11 @@ export async function getUserVotes(userId: string): Promise<
     created_at: string
   }>
 > {
-  try {
+    if (!userId) {
+      return []
+    }
+
+    try {
     const result = await turso.execute({
       sql: `
         SELECT 

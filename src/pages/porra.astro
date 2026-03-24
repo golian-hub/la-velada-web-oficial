@@ -13,28 +13,20 @@ const description =
   'Participa en la porra oficial de La Velada del Año VI y haz tus predicciones sobre los combates de Ibai Llanos y creadores de contenido.'
 const canonical = 'https://www.infolavelada.com/porra'
 
-// Obtener predicciones actuales
-let predictions: Record<string, { fighter_id: string; votes: number; percentage: number }[]> = {}
-try {
-  const allPredictions = await getAllPredictions()
-  predictions = Object.fromEntries(
-    allPredictions.map((p) => [p.combat_id, p.predictions])
-  )
-} catch {
-  // Use defaults
-}
-
 // Obtener ID de usuario (anónimo o sesión)
 const userId = extractUserId(Astro.request)
 
-// Obtener votos previos del usuario
-let userVotes: Record<string, string> = {}
-try {
-  const votes = await getUserVotes(userId)
-  userVotes = Object.fromEntries(votes.map((v) => [v.combat_id, v.fighter_id]))
-} catch (error) {
-  console.error('Error fetching user votes:', error)
-}
+// Obtener datos en paralelo para mejorar performance
+const [allPredictionsResult, userVotesResult] = await Promise.allSettled([
+  getAllPredictions(),
+  getUserVotes(userId),
+])
+
+const allPredictions = allPredictionsResult.status === 'fulfilled' ? allPredictionsResult.value : []
+const predictions = Object.fromEntries(allPredictions.map((p) => [p.combat_id, p.predictions]))
+
+const votes = userVotesResult.status === 'fulfilled' ? userVotesResult.value : []
+const userVotes = Object.fromEntries(votes.map((v) => [v.combat_id, v.fighter_id]))
 
 export const prerender = false
 ---
@@ -88,7 +80,7 @@ export const prerender = false
               <div
                 class:list={[
                   'relative flex w-full overflow-hidden',
-                  index === 0 ? 'h-64 sm:h-80 md:h-[450px]' : 'h-48 sm:h-64 md:h-80',
+                  index === 0 ? 'h-80 sm:h-[480px] md:h-[580px]' : 'h-48 sm:h-64 md:h-80',
                 ]}
               >
                 {/* Fighter 1 */}
