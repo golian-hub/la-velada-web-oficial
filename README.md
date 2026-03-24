@@ -219,7 +219,7 @@ Dos `console.log` dentro del código de caché imprimían en cada request. Con m
 
 ```bash
 # 1. Clonar e instalar
-git clone https://github.com/tu-usuario/la-velada-web-oficial.git
+git clone https://github.com/golian-hub/la-velada-web-oficial.git
 cd la-velada-web-oficial
 pnpm install
 
