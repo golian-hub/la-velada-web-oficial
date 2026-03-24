@@ -3,30 +3,24 @@ import Layout from '@/layouts/Layout.astro'
 import { porra } from '@/consts/pageTitles'
 import { COMBATS } from '@/consts/combats'
 import { getBoxerById } from '@/lib/boxers'
-import { getAllPredictions, getUserVotes, type CombatPrediction } from '@/lib/predictions'
+import { getAllPredictions, type CombatPrediction } from '@/lib/predictions'
 import PredictionBar from '@/components/PredictionBar.astro'
 import SectionTitle from '@/components/SectionTitle.astro'
 import VersusIcon from '@/components/VersusIcon.astro'
-import { extractUserId } from '@/lib/auth'
 
 const description =
   'Participa en la porra oficial de La Velada del Año VI y haz tus predicciones sobre los combates de Ibai Llanos y creadores de contenido.'
 const canonical = 'https://www.infolavelada.com/porra'
 
-// Obtener ID de usuario (anónimo o sesión)
-const userId = extractUserId(Astro.request)
-
-// Obtener datos en paralelo para mejorar performance
-const [allPredictionsResult, userVotesResult] = await Promise.allSettled([
-  getAllPredictions(),
-  getUserVotes(userId),
-])
-
-const allPredictions = allPredictionsResult.status === 'fulfilled' ? allPredictionsResult.value : []
+// SSR: Sólo se bloquea para las estadísticas globales
+const allPredictions = await getAllPredictions().catch(() => [])
 const predictions = Object.fromEntries(allPredictions.map((p) => [p.combat_id, p.predictions]))
 
-const votes = userVotesResult.status === 'fulfilled' ? userVotesResult.value : []
-const userVotes = Object.fromEntries(votes.map((v) => [v.combat_id, v.fighter_id]))
+// SSR en neutro: los votos personales se inyectarán vía Client-Side js
+const userVotes: Record<string, string> = {}
+
+// Protegemos a Turso DB contra picos masivos sirviendo esta ruta desde la caché Edge
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120')
 
 export const prerender = false
 ---
@@ -204,6 +198,31 @@ export const prerender = false
   import confetti from 'canvas-confetti'
 
   document.addEventListener('astro:page-load', async () => {
+    // 1. Recuperar Estado de Voto del Usuario Asíncronamente (Edge Bypass)
+    try {
+      const res = await fetch('/api/user/votes')
+      if (res.ok) {
+        const userVotesContext = await res.json()
+        const voteArticles = document.querySelectorAll('article[data-combat-id]')
+        
+        voteArticles.forEach((article) => {
+          const combatId = article.getAttribute('data-combat-id')
+          if (combatId && userVotesContext[combatId]) {
+            // El usuario ya había votado por este combate
+            article.setAttribute('data-voted', 'true')
+            const votedFighterId = userVotesContext[combatId]
+            const votedBtn = article.querySelector(`.vote-btn[data-fighter-id="${votedFighterId}"]`)
+            if (votedBtn) {
+              votedBtn.setAttribute('data-is-user-vote', 'true')
+            }
+          }
+        })
+      }
+    } catch (e) {
+      console.warn('Silent fallback on votes hydrate')
+    }
+
+    // 2. Controladores de Click para Votos Nuevos
     const voteButtons = document.querySelectorAll<HTMLButtonElement>('.vote-btn')
 
     voteButtons.forEach((btn) => {
