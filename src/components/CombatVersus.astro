@@ -12,85 +12,96 @@ const fighter1 = FIGHTERS.find((f) => f.id === combat?.fighters[0])
 const fighter2 = FIGHTERS.find((f) => f.id === combat?.fighters[1])
 ---
 
-<div data-combat-id={id} class="relative -mt-10 flex h-[60vh] w-full min-h-[320px] max-h-[680px]">
-  <!-- Primer Combatiente -->
-  <div class="relative h-full w-1/2 overflow-hidden">
+<div
+  data-combat-id={id}
+  class="relative overflow-hidden rounded-2xl border border-white/10 h-[320px] sm:h-[420px] md:h-[520px]"
+>
+  <!-- Fighters row -->
+  <div class="relative flex h-full w-full">
+
+    <!-- Fighter 1 -->
     <a
-      class="block h-full w-full"
       href={`/luchador/${fighter1?.id}`}
       data-astro-prefetch="hover"
+      class="group/f1 relative flex h-full w-1/2 overflow-hidden"
     >
       <img
         src={`/images/fighters/cards/${fighter1?.id}.webp`}
         alt={`Imagen de ${fighter1?.name}`}
-        class="h-full w-full object-cover object-top drop-shadow-2xl transition-transform duration-500 hover:scale-110"
+        class="h-full w-full object-cover object-top transition-all duration-700 group-hover/f1:scale-105 group-hover/f1:brightness-110"
         transition:name={`combat-img:${fighter1?.id}`}
-        loading="lazy"
+        loading="eager"
+        fetchpriority="high"
         decoding="async"
-        onerror="this.parentElement.parentElement.style.display='none'"
+        onerror="this.style.opacity='0'"
       />
+      <!-- Overlay gradient desde abajo -->
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+      <!-- Nombre fighter -->
+      <div class="absolute bottom-14 left-0 right-0 z-20 px-4 text-center">
+        <span class="block font-cinzel text-xs font-bold tracking-widest text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] sm:text-sm md:text-base">
+          {fighter1?.name}
+        </span>
+      </div>
     </a>
-    <!-- Difuminado borde superior -->
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black to-transparent"></div>
-    <!-- Difuminado borde derecho (hacia el centro) -->
-    <div class="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent"></div>
-    <!-- Difuminado borde inferior -->
-    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent"></div>
-  </div>
 
-  <!-- Versus Banner -->
-  <div
-    class="pointer-events-none absolute bottom-8 left-1/2 z-10 -translate-x-1/2 sm:bottom-12 lg:bottom-16"
-    transition:name={`vs:${fighter1?.id}-${fighter2?.id}`}
-  >
-    <div class="flex items-center gap-3 px-4 py-2 sm:gap-5 sm:px-6 sm:py-3 md:gap-8 md:px-8" style="background: radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);">
-      <span class="font-cinzel text-right text-xs font-bold uppercase tracking-widest text-white sm:text-base md:text-xl lg:text-2xl">
-        {fighter1?.name}
-      </span>
-      <VersusIcon class="h-10 w-10 text-theme-gold drop-shadow-[0_0_20px_rgba(212,175,55,0.8)] sm:h-14 sm:w-14 lg:h-20 lg:w-20" />
-      <span class="font-cinzel text-left text-xs font-bold uppercase tracking-widest text-white sm:text-base md:text-xl lg:text-2xl">
-        {fighter2?.name}
-      </span>
+    <!-- VS Central -->
+    <div class="pointer-events-none absolute inset-0 z-30 flex items-center justify-center" transition:name={`vs:${fighter1?.id}-${fighter2?.id}`}>
+      <div class="relative flex items-center justify-center">
+        <div class="absolute h-16 w-16 animate-pulse rounded-full bg-theme-gold/10 blur-xl"></div>
+        <div class="relative flex h-12 w-12 items-center justify-center rounded-full border border-theme-gold/30 bg-black/70 shadow-[0_0_24px_rgba(199,168,107,0.25)] backdrop-blur-md md:h-16 md:w-16">
+          <VersusIcon class="h-7 w-7 text-theme-gold md:h-9 md:w-9" />
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- Segundo Combatiente -->
-  <div class="relative h-full w-1/2 overflow-hidden">
-    <a class="block h-full w-full" href={`/luchador/${fighter2?.id}`} data-astro-prefetch="hover">
+    <!-- Fighter 2 -->
+    <a
+      href={`/luchador/${fighter2?.id}`}
+      data-astro-prefetch="hover"
+      class="group/f2 relative flex h-full w-1/2 overflow-hidden"
+    >
       <img
         src={`/images/fighters/cards/${fighter2?.id}.webp`}
         alt={`Imagen de ${fighter2?.name}`}
-        class="h-full w-full object-cover object-top drop-shadow-2xl transition-transform duration-500 hover:scale-110"
+        class="h-full w-full object-cover object-top transition-all duration-700 group-hover/f2:scale-105 group-hover/f2:brightness-110"
         transition:name={`combat-img:${fighter2?.id}`}
-        loading="lazy"
+        loading="eager"
+        fetchpriority="high"
         decoding="async"
-        onerror="this.parentElement.parentElement.style.display='none'"
+        onerror="this.style.opacity='0'"
       />
+      <!-- Overlay gradient desde abajo -->
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+      <!-- Nombre fighter -->
+      <div class="absolute bottom-14 left-0 right-0 z-20 px-4 text-center">
+        <span class="block font-cinzel text-xs font-bold tracking-widest text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] sm:text-sm md:text-base">
+          {fighter2?.name}
+        </span>
+      </div>
     </a>
-    <!-- Difuminado borde superior -->
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black to-transparent"></div>
-    <!-- Difuminado borde izquierdo (hacia el centro) -->
-    <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent"></div>
-    <!-- Difuminado borde inferior -->
-    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent"></div>
+
+    <!-- Barra de Predicción al fondo -->
+    <div class="pointer-events-none absolute bottom-0 left-0 right-0 z-40">
+      <PredictionBar
+        combatId={id}
+        overlay={false}
+        variant="minimal"
+        showInitial={true}
+        fighter1={{
+          id: fighter1?.id || '',
+          name: fighter1?.name || '',
+          percentage: 60,
+        }}
+        fighter2={{
+          id: fighter2?.id || '',
+          name: fighter2?.name || '',
+          percentage: 40,
+        }}
+        totalVotes={100}
+      />
+    </div>
   </div>
-  <!-- Barra de Predicción Overlay -->
-  <PredictionBar
-    combatId={id}
-    overlay={true}
-    variant="minimal"
-    fighter1={{
-      id: fighter1?.id || '',
-      name: fighter1?.name || '',
-      percentage: 60,
-    }}
-    fighter2={{
-      id: fighter2?.id || '',
-      name: fighter2?.name || '',
-      percentage: 40,
-    }}
-    totalVotes={100}
-  />
 </div>
 
 <script>

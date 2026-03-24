@@ -18,7 +18,7 @@ function isActive(href: string): boolean {
 
 <header class="fixed left-0 right-0 top-0 z-50">
   <nav
-    class="relative flex items-start justify-between px-4 pt-0 transition-all duration-300 md:px-8"
+    class="relative flex items-center justify-between px-4 pt-0 transition-all duration-300 md:px-8"
     id="main-nav"
     aria-label="Navegación principal"
   >
@@ -27,7 +27,7 @@ function isActive(href: string): boolean {
       <img
         src="/logo.png"
         alt="La Velada del Año VI"
-        class="h-20 w-auto transition-transform duration-300 hover:scale-105 md:h-28"
+        class="h-16 w-auto transition-transform duration-300 hover:scale-105 md:h-20 lg:h-28"
         onerror="this.style.display='none'"
       />
     </a>
@@ -35,7 +35,7 @@ function isActive(href: string): boolean {
     <!-- Desktop Navigation -->
     <ul
       id="nav-links-container"
-      class="hidden items-center gap-1 rounded-b-2xl px-8 py-3 transition-all duration-300 md:flex"
+      class="hidden items-center gap-1 rounded-2xl px-8 py-3 transition-all duration-300 md:flex"
     >
       {
         navLinks.map((link) => (
@@ -43,7 +43,7 @@ function isActive(href: string): boolean {
             <a
               href={link.href}
               class:list={[
-                'relative rounded-lg px-3 py-1 font-cinzel text-xl font-semibold tracking-wider transition-all duration-300',
+                'relative rounded-lg px-2 py-1 font-cinzel text-sm font-semibold tracking-wider transition-all duration-300 md:px-3 lg:text-xl',
                 isActive(link.href)
                   ? 'text-theme-gold'
                   : 'text-white/70 hover:text-white hover:bg-white/10',
@@ -65,7 +65,7 @@ function isActive(href: string): boolean {
       href="https://twitch.tv/ibai"
       target="_blank"
       rel="noopener noreferrer"
-      class="hidden self-center items-center gap-2 rounded-full bg-pink-600/80 px-4 py-1.5 font-cinzel text-[20px] font-bold text-white transition-all duration-300 hover:scale-105 hover:bg-pink-600 md:flex"
+      class="hidden self-center items-center gap-2 rounded-full bg-pink-600/80 px-3 py-1.5 font-cinzel text-xs font-bold text-white transition-all duration-300 hover:scale-105 hover:bg-pink-600 md:flex lg:px-4 lg:text-base"
     >
       <span class="relative flex h-2 w-2">
         <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75"></span>
@@ -138,8 +138,7 @@ function isActive(href: string): boolean {
     );
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-top: none;
-    border-radius: 0 0 1.5rem 1.5rem;
+    border-radius: 1.5rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   }
 </style>
