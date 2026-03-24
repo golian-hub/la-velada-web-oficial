@@ -1,0 +1,131 @@
+---
+import type { BoxerStats } from '@/types/fighters'
+
+interface Props {
+  stats: BoxerStats
+  class?: string
+}
+
+const { stats, class: className } = Astro.props
+
+const keys = ['power', 'speed', 'stamina', 'technique', 'defense'] as const
+const labels = {
+  power: 'Fuerza',
+  speed: 'Velocidad',
+  stamina: 'Resistencia',
+  technique: 'Técnica',
+  defense: 'Defensa',
+}
+
+const size = 300
+const center = size / 2
+const radius = size * 0.35
+
+// Calcular puntos del polígono
+const points = keys.map((key, i) => {
+  const angle = (Math.PI * 2 * i) / keys.length - Math.PI / 2
+  const value = stats[key] / 100
+  const x = center + Math.cos(angle) * radius * value
+  const y = center + Math.sin(angle) * radius * value
+  return `${x},${y}`
+}).join(' ')
+
+// Calcular puntos de la red (background)
+const gridLevels = [0.25, 0.5, 0.75, 1]
+const gridPolygons = gridLevels.map(level => {
+  return keys.map((_, i) => {
+    const angle = (Math.PI * 2 * i) / keys.length - Math.PI / 2
+    const x = center + Math.cos(angle) * radius * level
+    const y = center + Math.sin(angle) * radius * level
+    return `${x},${y}`
+  }).join(' ')
+})
+
+// Posición de las etiquetas
+const labelPositions = keys.map((_, i) => {
+  const angle = (Math.PI * 2 * i) / keys.length - Math.PI / 2
+  const x = center + Math.cos(angle) * (radius + 25)
+  const y = center + Math.sin(angle) * (radius + 25)
+  return { x, y }
+})
+---
+
+<div class:list={['relative', className]}>
+  <svg viewBox={`0 0 ${size} ${size}`} class="w-full h-auto drop-shadow-2xl">
+    <!-- Red de fondo -->
+    {gridPolygons.map(points => (
+      <polygon
+        points={points}
+        class="fill-none stroke-white/10 stroke-1"
+      />
+    ))}
+    
+    <!-- Ejes -->
+    {keys.map((_, i) => {
+      const angle = (Math.PI * 2 * i) / keys.length - Math.PI / 2
+      const x = center + Math.cos(angle) * radius
+      const y = center + Math.sin(angle) * radius
+      return <line x1={center} y1={center} x2={x} y2={y} class="stroke-white/10 stroke-1" />
+    })}
+
+    <!-- Polígono de estadísticas -->
+    <polygon
+      points={points}
+      class="fill-theme-gold/30 stroke-theme-gold stroke-2 animate-pulse-slow"
+    >
+      <animate
+        attributeName="opacity"
+        from="0"
+        to="1"
+        dur="1s"
+        fill="freeze"
+      />
+    </polygon>
+
+    <!-- Puntos en los vértices -->
+    {keys.map((key, i) => {
+      const angle = (Math.PI * 2 * i) / keys.length - Math.PI / 2
+      const value = stats[key] / 100
+      const x = center + Math.cos(angle) * radius * value
+      const y = center + Math.sin(angle) * radius * value
+      return (
+        <circle
+          cx={x}
+          cy={y}
+          r="4"
+          class="fill-theme-gold shadow-lg"
+        />
+      )
+    })}
+
+    <!-- Etiquetas -->
+    {labelPositions.map((pos, i) => (
+      <text
+        x={pos.x}
+        y={pos.y}
+        text-anchor="middle"
+        dominant-baseline="middle"
+        class="fill-white/60 font-cinzel text-[10px] uppercase tracking-tighter"
+      >
+        {labels[keys[i]]}
+      </text>
+    ))}
+  </svg>
+</div>
+
+<style>
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.8;
+      filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.5));
+    }
+    50% {
+      opacity: 1;
+      filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));
+    }
+  }
+</style>

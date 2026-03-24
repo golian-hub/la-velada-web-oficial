@@ -1,0 +1,81 @@
+---
+import Logo from '@/assets/icons/logo.svg'
+
+const { fighter, birthDate } = Astro.props
+---
+
+<article
+  class="w-full max-w-[450px] overflow-hidden rounded-xl border border-white/20 bg-gradient-to-br from-pink-950/60 to-theme-midnight/90 shadow-[0_0_40px_rgba(199,168,107,0.08)] transition-all duration-500 hover:border-theme-gold/40 hover:shadow-[0_0_50px_rgba(199,168,107,0.15)] lg:min-w-[300px]"
+>
+  <!-- Contenedor principal -->
+  <div class="grid w-full grid-flow-row grid-cols-2 sm:grid-flow-col">
+    <!-- Informacion General -->
+    <section class="order-2 col-span-2 sm:order-1">
+      <!-- Nombre real -->
+      <section class="col-span-2">
+        <h1
+          class="animate-fade-in flex items-center justify-center border-b border-white/10 bg-white/5 px-3 py-2 text-center text-base font-bold tracking-wide text-theme-gold [text-transform:none]"
+        >
+          {fighter.realName}
+        </h1>
+      </section>
+      <!-- Datos del luchador -->
+      <div class="grid grid-cols-2 gap-3 px-4 py-4 text-left text-white">
+        <section class="flex flex-col gap-0.5">
+          <span class="text-xs uppercase tracking-wider text-white/40">Edad</span>
+          <strong class="animate-fade-in animate-delay-250 text-sm text-white">{fighter.age} años</strong>
+        </section>
+        <section class="flex flex-col gap-0.5">
+          <span class="text-xs uppercase tracking-wider text-white/40">Peso</span>
+          <strong class="animate-fade-in animate-delay-300 text-sm text-white">{fighter.weight} kg</strong>
+        </section>
+        <section class="flex flex-col gap-0.5">
+          <span class="text-xs uppercase tracking-wider text-white/40">Nacimiento</span>
+          <strong class="animate-fade-in animate-delay-[350ms] text-sm text-white [text-transform:none]">{birthDate}</strong>
+        </section>
+        <section class="flex flex-col gap-0.5">
+          <span class="text-xs uppercase tracking-wider text-white/40">Altura</span>
+          <strong class="animate-fade-in animate-delay-400 text-sm text-white">{fighter.height} m</strong>
+        </section>
+      </div>
+    </section>
+
+    <!-- Imagen del luchador -->
+    <section class="animate-fade-in animate-delay-500 order-1 col-span-2 flex items-center justify-center sm:order-2">
+      <figure class="w-full max-w-[140px]">
+        <img
+          class="aspect-[140/186.33] w-full overflow-hidden rounded-bl-none object-cover sm:rounded-bl-lg"
+          src={`/images/fighters/cards/${fighter.id}.webp`}
+          alt={`Tarjeta del boxeador ${fighter.name}`}
+          loading="lazy"
+          decoding="async"
+          onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'aspect-[140/186.33] w-full bg-gradient-to-t from-pink-900/60 to-transparent rounded-bl-lg\\'></div>'"
+        />
+      </figure>
+    </section>
+  </div>
+
+  <!-- Footer con bandera y logo -->
+  <footer class="flex items-center justify-between border-t border-white/10 bg-black/30 px-4 py-3">
+    <section class="flex items-center gap-2">
+      <figure>
+        <img
+          class="block h-auto w-7 rounded-sm shadow"
+          src={`/images/flags/${fighter.country}.webp`}
+          alt={`País ${fighter.country}`}
+          decoding="async"
+        />
+      </figure>
+      <strong class="animate-fade-in animate-delay-700 text-sm lowercase text-white/80">{fighter.city}</strong>
+    </section>
+
+    <section class="animate-fade-in animate-delay-800 flex items-center justify-center">
+      <img
+        class="h-8 opacity-60"
+        src="/favicon.svg"
+        alt="La Velada del Año VI"
+        decoding="async"
+      />
+    </section>
+  </footer>
+</article>

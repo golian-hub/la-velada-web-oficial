@@ -1,0 +1,142 @@
+---
+import { getFighterPlaceholder } from '@/lib/image-fallback'
+
+const { id, name, versus, class: extraClass } = Astro.props
+
+interface Props {
+  id: string
+  name: string
+  versus: string
+  class: string
+}
+
+const placeholder = getFighterPlaceholder(name, id)
+---
+
+<a
+  class={`boxer-card ${extraClass} inline-block transition-all w-28 sm:w-32 md:w-28 lg:w-32 xl:w-36 2xl:w-40 group relative rounded-lg duration-300 hover:scale-110 hover:shadow-lg hover:z-20 focus-visible:scale-110 focus-visible:shadow-lg focus-visible:z-20 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-gold`}
+  aria-label={`Ver perfil del boxeador ${name}`}
+  href={`/luchador/${id}`}
+  data-id={id}
+  data-versus={versus}
+>
+  <div class="relative overflow-hidden rounded-lg">
+      <img
+        class="via-40 aspect-[900/1200] h-full w-full bg-gradient-to-t from-gray-50/40 via-gray-50/20 to-transparent object-cover transition-transform duration-500 group-hover:scale-110"
+        src={`/images/fighters/cards/${id}.webp`}
+        alt={`Tarjeta del boxeador ${name}`}
+        loading="lazy"
+        decoding="async"
+        onerror="this.style.opacity='0'; this.insertAdjacentHTML('afterend', '<div class=\\'aspect-[900/1200] w-full\\'style=\\'background:linear-gradient(135deg,#2d0a1e,#0a1024)\\'></div>')"
+      />
+
+    <div
+      class="absolute inset-0 -translate-x-full bg-gradient-to-tr from-transparent via-white/20 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full"
+    >
+    </div>
+
+    <div
+      class="border-theme-gold/70 absolute inset-0 rounded-lg border-0 opacity-0 transition-all duration-300 group-hover:border-2 group-hover:opacity-100"
+    >
+    </div>
+  </div>
+
+</a>
+
+<style>
+  .boxer-left {
+    /* clip-path: polygon(0% 0%, 95% 0%, 100% 100%, 5% 100%); */
+    transform: skew(2deg);
+  }
+
+  .boxer-right {
+    /* clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%); */
+    transform: skew(-2deg);
+  }
+
+  @media (prefers-reduced-motion) {
+    .boxer-card,
+    .boxer-card:hover,
+    .boxer-card img,
+    .boxer-card div {
+      transition: opacity 0.3s ease !important;
+      transform: none !important;
+    }
+  }
+
+  @keyframes pulseBorder {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 20, 147, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(255, 20, 147, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 20, 147, 0);
+    }
+  }
+
+  @keyframes selectedPulse {
+    0% {
+      box-shadow:
+        0 0 0 0 rgba(255, 20, 147, 0.7),
+        inset 0 0 0 2px rgba(255, 20, 147, 1);
+    }
+    70% {
+      box-shadow:
+        0 0 0 15px rgba(255, 20, 147, 0),
+        inset 0 0 0 2px rgba(255, 20, 147, 1);
+    }
+    100% {
+      box-shadow:
+        0 0 0 0 rgba(255, 20, 147, 0),
+        inset 0 0 0 2px rgba(255, 20, 147, 1);
+    }
+  }
+
+  .boxer-card.selected {
+    animation: selectedPulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
+  }
+
+  @media (prefers-reduced-motion) {
+    .boxer-card.selected {
+      animation: none;
+      box-shadow: inset 0 0 0 2px rgba(255, 20, 147, 1);
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const boxerCards = document.querySelectorAll('.boxer-card')
+
+    boxerCards.forEach((singleBoxerCard) => {
+      singleBoxerCard.addEventListener('mouseenter', () => {
+        const id = singleBoxerCard.getAttribute('data-id')
+        if (id) {
+          const event = new CustomEvent('boxer-card-hovered', {
+            detail: { id },
+          })
+          document.dispatchEvent(event)
+        }
+
+        // Highlight current and versus card
+        boxerCards.forEach((card) => card.classList.add('grayscale-100', 'opacity-40'))
+        singleBoxerCard.classList.remove('grayscale-100', 'opacity-40')
+
+        const versus = singleBoxerCard.getAttribute('data-versus')
+        if (versus) {
+          const versusCard = document.querySelector(`[data-id="${versus}"]`)
+          versusCard?.classList.remove('grayscale-100', 'opacity-40')
+        }
+      })
+
+      singleBoxerCard.addEventListener('mouseleave', () => {
+        boxerCards.forEach((card) => card.classList.remove('grayscale-100', 'opacity-40'))
+
+        const event = new CustomEvent('boxer-card-exit')
+        document.dispatchEvent(event)
+      })
+    })
+  })
+</script>

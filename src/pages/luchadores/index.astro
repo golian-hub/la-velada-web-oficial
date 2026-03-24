@@ -1,0 +1,123 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { FIGHTERS } from '@/consts/fighters'
+import { countries } from '@/consts/countries'
+import SectionTitle from '@/components/SectionTitle.astro'
+
+export const prerender = true
+
+const title = 'Luchadores - La Velada del Año VI'
+const description =
+  'Todos los luchadores de La Velada del Año VI. 25 de julio de 2026 en el Estadio de La Cartuja, Sevilla.'
+const canonical = 'https://www.infolavelada.com/luchadores'
+
+const maleFighters = FIGHTERS.filter((f) => f.gender === 'masculino')
+const femaleFighters = FIGHTERS.filter((f) => f.gender === 'femenino')
+
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <section class="relative mx-auto mt-24 min-h-screen max-w-7xl px-4 pb-24">
+    <!-- Header -->
+    <div class="mb-16 text-center">
+      <SectionTitle title="LOS LUCHADORES" />
+      <p class="mt-4 text-lg text-white/60">
+        La Velada del Año VI — 25 de julio de 2026, Estadio de La Cartuja, Sevilla
+      </p>
+    </div>
+
+    <!-- Female Fighters -->
+    {
+      femaleFighters.length > 0 && (
+        <div class="mb-16">
+          <h2 class="mb-8 text-center font-cinzel text-lg font-bold uppercase tracking-wider text-pink-400">
+            Categoría Femenina
+          </h2>
+          <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {femaleFighters.map((fighter) => {
+              const country = countries.find((c) => c.id === fighter.country)
+              return (
+                <a href={`/luchador/${fighter.id}`} class="group block">
+                  <article class="overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all duration-300 hover:border-pink-500/40 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(236,72,153,0.15)]">
+                    <div class="relative overflow-hidden">
+                      <img
+                        src={`/images/fighters/cards/${fighter.id}.webp`}
+                        alt={fighter.name}
+                        class="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        onerror={`this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22 preserveAspectRatio=%22xMidYMid slice%22><defs><linearGradient id=%22gradFemale%22 x1=%220%%22 y1=%220%%22 x2=%22100%%22 y2=%22100%%22><stop offset=%220%%22 style=%22stop-color:%2332162a;stop-opacity:1%22 /><stop offset=%22100%%22 style=%22stop-color:%231a0b16;stop-opacity:1%22 /></linearGradient></defs><rect fill=%22url(%23gradFemale)%22 width=%22300%22 height=%22400%22/><path d=%22M150 180c33.137 0 60-26.863 60-60s-26.863-60-60-60-60 26.863-60 60 26.863 60 60 60zm0 30c-49.706 0-90 40.294-90 90v30h180v-30c0-49.706-40.294-90-90-90z%22 fill=%22%23ec4899%22 fill-opacity=%220.1%22/></svg>'`}
+                      />
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    </div>
+                    <div class="p-3">
+                      <p class="truncate text-center font-cinzel text-xs font-bold text-white group-hover:text-theme-gold">
+                        {fighter.name}
+                      </p>
+                      <div class="mt-1 flex items-center justify-center gap-1">
+                        {country && (
+                          <img
+                            src={country.image.src}
+                            alt={country.name}
+                            class="h-3 w-auto rounded-sm"
+                          />
+                        )}
+                        <span class="text-[10px] text-white/40">{fighter.weight}kg</span>
+                      </div>
+                    </div>
+                  </article>
+                </a>
+              )
+            })}
+          </div>
+        </div>
+      )
+    }
+
+    <!-- Male Fighters -->
+    {
+      maleFighters.length > 0 && (
+        <div>
+          <h2 class="mb-8 text-center font-cinzel text-lg font-bold uppercase tracking-wider text-theme-gold/80">
+            Categoría Masculina
+          </h2>
+          <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {maleFighters.map((fighter) => {
+              const country = countries.find((c) => c.id === fighter.country)
+              return (
+                <a href={`/luchador/${fighter.id}`} class="group block">
+                  <article class="overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all duration-300 hover:border-theme-gold/40 hover:bg-white/8 hover:shadow-[0_0_20px_rgba(199,168,107,0.15)]">
+                    <div class="relative overflow-hidden">
+                      <img
+                        src={`/images/fighters/cards/${fighter.id}.webp`}
+                        alt={fighter.name}
+                        class="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        onerror={`this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22 preserveAspectRatio=%22xMidYMid slice%22><defs><linearGradient id=%22gradMale%22 x1=%220%%22 y1=%220%%22 x2=%22100%%22 y2=%22100%%22><stop offset=%220%%22 style=%22stop-color:%23142346;stop-opacity:1%22 /><stop offset=%22100%%22 style=%22stop-color:%230a1024;stop-opacity:1%22 /></linearGradient></defs><rect fill=%22url(%23gradMale)%22 width=%22300%22 height=%22400%22/><path d=%22M150 180c33.137 0 60-26.863 60-60s-26.863-60-60-60-60 26.863-60 60 26.863 60 60 60zm0 30c-49.706 0-90 40.294-90 90v30h180v-30c0-49.706-40.294-90-90-90z%22 fill=%22%23c7a86b%22 fill-opacity=%220.1%22/></svg>'`}
+                      />
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    </div>
+                    <div class="p-3">
+                      <p class="truncate text-center font-cinzel text-xs font-bold text-white group-hover:text-theme-gold">
+                        {fighter.name}
+                      </p>
+                      <div class="mt-1 flex items-center justify-center gap-1">
+                        {country && (
+                          <img
+                            src={country.image.src}
+                            alt={country.name}
+                            class="h-3 w-auto rounded-sm"
+                          />
+                        )}
+                        <span class="text-[10px] text-white/40">{fighter.weight}kg</span>
+                      </div>
+                    </div>
+                  </article>
+                </a>
+              )
+            })}
+          </div>
+        </div>
+      )
+    }
+  </section>
+</Layout>

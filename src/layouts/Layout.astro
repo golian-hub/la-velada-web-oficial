@@ -1,0 +1,163 @@
+---
+import { ClientRouter } from 'astro:transitions'
+import Analytics from '@vercel/analytics/astro'
+import Navigation from '@/components/Navigation.astro'
+
+import '@/styles/global.css'
+
+import { fixedTitle } from '@/consts/pageTitles'
+
+// Generate star positions for CSS box-shadow starfield
+function generateStars(count: number, seed = 0) {
+  const stars: string[] = []
+  let s = seed + 1
+  for (let i = 0; i < count; i++) {
+    s = (s * 1664525 + 1013904223) & 0xffffffff
+    const x = Math.abs(s % 2000)
+    s = (s * 1664525 + 1013904223) & 0xffffffff
+    const y = Math.abs(s % 2000)
+    stars.push(`${x}px ${y}px #fff`)
+  }
+  return stars.join(',')
+}
+
+const starsSmall  = generateStars(700, 1)
+const starsMedium = generateStars(200, 2)
+const starsLarge  = generateStars(80,  3)
+
+function generateColoredStars(count: number, seed: number, color: string) {
+  const stars: string[] = []
+  let s = seed + 1
+  for (let i = 0; i < count; i++) {
+    s = (s * 1664525 + 1013904223) & 0xffffffff
+    const x = Math.abs(s % 2000)
+    s = (s * 1664525 + 1013904223) & 0xffffffff
+    const y = Math.abs(s % 2000)
+    stars.push(`${x}px ${y}px ${color}`)
+  }
+  return stars.join(',')
+}
+
+const starsGold = generateColoredStars(35, 42, '#c7a86b')
+const starsBlue = generateColoredStars(50, 77, '#6a8cc7')
+interface Props {
+  title: string
+  description?: string
+  canonical?: string
+  robots?: string
+}
+
+const {
+  title = fixedTitle,
+  description = 'Evento de boxeo aficionado entre streamers y creadores de contenido, organizado por Ibai Llanos',
+  canonical,
+  robots,
+} = Astro.props
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {title}
+    </title>
+
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link
+      rel="preload"
+      href="/fonts/cinzel-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <meta name="description" content={description} />
+    <meta name="author" content="Ibai Llanos" />
+    <meta name="theme-color" content="#0a1024" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {robots && <meta name="robots" content={robots} />}
+
+    <meta property="og:url" content="https://www.infolavelada.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://www.infolavelada.com/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="La Velada del Año VI — Evento de boxeo organizado por Ibai Llanos" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="La Velada del Año VI" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@infoLaVelada" />
+    <meta name="twitter:creator" content="@ibaiLlanos" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://www.infolavelada.com/og.jpg" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Event",
+        "name": "La Velada del Año VI",
+        "description": "Evento de boxeo aficionado entre streamers y creadores de contenido organizado por Ibai Llanos. 25 de julio de 2026 en el Estadio de La Cartuja, Sevilla.",
+        "image": "https://www.infolavelada.com/og.jpg",
+        "startDate": "2026-07-25T20:00:00+02:00",
+        "endDate": "2026-07-26T02:00:00+02:00",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "location": {
+          "@type": "Place",
+          "name": "Estadio de La Cartuja",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Calle de Leonardo Da Vinci, s/n",
+            "addressLocality": "Sevilla",
+            "addressRegion": "Andalucía",
+            "postalCode": "41092",
+            "addressCountry": "ES"
+          }
+        },
+        "organizer": {
+          "@type": "Person",
+          "name": "Ibai Llanos",
+          "url": "https://twitch.tv/ibai"
+        },
+        "performer": {
+          "@type": "PerformingGroup",
+          "name": "Creadores de contenido hispanohablantes"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.lavelada.es/entradas",
+          "priceCurrency": "EUR",
+          "availability": "https://schema.org/SoldOut",
+          "validFrom": "2026-04-01T12:00:00+02:00"
+        }
+      }
+    </script>
+    <ClientRouter />
+    <Analytics />
+  </head>
+  <body>
+    <!-- Starfield background -->
+    <div id="stars1"     style={`box-shadow: ${starsSmall}`}  aria-hidden="true"></div>
+    <div id="stars2"     style={`box-shadow: ${starsMedium}`} aria-hidden="true"></div>
+    <div id="stars3"     style={`box-shadow: ${starsLarge}`}  aria-hidden="true"></div>
+    <div id="stars-gold" style={`box-shadow: ${starsGold}`}   aria-hidden="true"></div>
+    <div id="stars-blue" style={`box-shadow: ${starsBlue}`}   aria-hidden="true"></div>
+
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-black focus:outline-none">
+      Saltar al contenido principal
+    </a>
+    <Navigation />
+    <main id="main-content">
+      <slot />
+    </main>
+  </body>
+</html>

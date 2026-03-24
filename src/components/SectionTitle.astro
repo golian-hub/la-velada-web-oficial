@@ -1,0 +1,14 @@
+---
+interface Props {
+  class?: string
+  title: string
+}
+
+const { class: className, title } = Astro.props
+---
+
+<h2 class:list={[`mb-4 text-center text-4xl font-bold tracking-wider`, className]}>
+  <span class="bg-gradient-to-r from-theme-gold via-yellow-200 to-theme-gold bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(199,168,107,0.3)]">
+    {title}
+  </span>
+</h2>

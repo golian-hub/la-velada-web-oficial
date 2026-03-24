@@ -1,0 +1,200 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import VersusIcon from '@/components/VersusIcon.astro'
+
+import BoxerClipList from '@/components/BoxerClipList.astro'
+import BoxerClipDrawer from '@/components/BoxerClipDrawer.astro'
+import BoxerGallery from '@/components/BoxerGallery.astro'
+import BoxerSocialLink from '@/components/BoxerSocialLink.astro'
+import BoxerWorkout from '@/components/BoxerWorkout.astro'
+import RadarChart from '@/components/RadarChart.astro'
+
+import { FIGHTERS } from '@/consts/fighters'
+import { fixedTitle } from '@/consts/pageTitles'
+import { COMBATS } from '@/consts/combats'
+import { getBoxerById } from '@/lib/boxers'
+import { countries } from '@/consts/countries'
+
+export const prerender = true
+
+export function getStaticPaths() {
+  return FIGHTERS.map((fighter) => ({
+    params: { id: fighter.id },
+  }))
+}
+
+const { id } = Astro.params
+if (!id) return Astro.redirect('/404')
+
+const fighter = getBoxerById(id)
+if (!fighter) return Astro.redirect('/404')
+
+const combat = COMBATS.find((combat) => combat.fighters.includes(id))
+const combatId = combat?.id
+const opponent = getBoxerById(fighter.versus)
+
+const description = `Biografía, estadísticas y clips de ${fighter.name}, participante de La Velada del Año VI. ${fighter.bio.substring(0, 120)}${fighter.bio.length > 120 ? '...' : ''}`
+const canonical = `https://www.infolavelada.com/luchador/${id}`
+
+const birthDate = fighter.birthDate.toLocaleDateString('es-ES', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+})
+
+const country = countries.find((c) => c.id === fighter.country)
+---
+
+<Layout title={`${fighter.name} | ${fixedTitle}`} description={description} canonical={canonical}>
+
+  <!-- HERO -->
+  <section class="relative mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 pt-4 lg:flex-row lg:items-center lg:gap-16 lg:pt-8">
+
+    <!-- Imagen del luchador -->
+    <div class="relative flex w-full justify-center lg:w-1/2">
+      <img
+        id={`big-img-${id}`}
+        src={`/images/fighters/cards/${id}.webp`}
+        alt={`Retrato de ${fighter.name}`}
+        class="mask-fade-bottom h-auto max-h-[520px] w-auto max-w-[340px] object-contain transition-transform duration-700 hover:scale-105 lg:max-h-[640px] lg:max-w-[420px]"
+        transition:name={`image-${id}`}
+        onerror={`this.style.display='none'; document.getElementById('fallback-${id}').style.display='flex'`}
+        fetchpriority="high"
+        decoding="async"
+      />
+      <!-- Fallback -->
+      <div
+        id={`fallback-${id}`}
+        style="display:none"
+        class="flex h-[420px] w-[280px] flex-col items-center justify-center rounded-2xl border border-theme-gold/20 bg-gradient-to-b from-pink-950/50 to-theme-midnight/90"
+      >
+        <div class="flex h-36 w-36 items-center justify-center rounded-full border-2 border-theme-gold/40 bg-black/30">
+          <span class="font-cinzel text-5xl font-bold text-theme-gold">
+            {fighter.name.split(' ').map((w: string) => w[0]).slice(0, 2).join('')}
+          </span>
+        </div>
+        <p class="mt-6 font-cinzel text-lg font-bold text-theme-gold">{fighter.name}</p>
+      </div>
+    </div>
+
+    <!-- Info del luchador -->
+    <div class="flex w-full flex-col gap-6 pb-8 lg:w-1/2 lg:pb-16">
+      <!-- Nombre -->
+      <div>
+        <p class="font-cinzel text-sm uppercase tracking-[0.3em] text-theme-gold/60">{fighter.realName}</p>
+        <h1 class="font-cinzel text-4xl font-black uppercase tracking-wide text-white lg:text-5xl">{fighter.name}</h1>
+        {country && (
+          <div class="mt-2 flex items-center gap-2">
+            <img src={country.image.src} alt={country.name} class="h-auto w-6 rounded-sm shadow" loading="lazy" decoding="async" />
+            <span class="text-sm text-white/50 [text-transform:none]">{fighter.city}, {country.name}</span>
+          </div>
+        )}
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-3">
+        <div class="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
+          <p class="text-xs uppercase tracking-wider text-white/40">Edad</p>
+          <p class="font-cinzel text-xl font-bold text-white">{fighter.age}</p>
+        </div>
+        <div class="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
+          <p class="text-xs uppercase tracking-wider text-white/40">Altura</p>
+          <p class="font-cinzel text-xl font-bold text-white">{fighter.height}<span class="text-sm font-normal text-white/50"> m</span></p>
+        </div>
+        <div class="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
+          <p class="text-xs uppercase tracking-wider text-white/40">Peso</p>
+          <p class="font-cinzel text-xl font-bold text-white">{fighter.weight}<span class="text-sm font-normal text-white/50"> kg</span></p>
+        </div>
+      </div>
+
+      <!-- Radar Chart -->
+      {fighter.stats && (
+        <div class="mx-auto w-full max-w-xs">
+          <RadarChart stats={fighter.stats} />
+        </div>
+      )}
+
+      <!-- Redes sociales -->
+      {(fighter.socials || []).length > 0 && (
+        <div class="flex flex-wrap gap-2">
+          {(fighter.socials || []).map((item) => (
+            <BoxerSocialLink social={item} />
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- BIO -->
+  {fighter.bio && (
+    <section class="mx-auto mt-10 max-w-4xl px-4 lg:px-10">
+      <p class="text-center text-base leading-relaxed text-white/70 [text-transform:none] lg:text-lg">
+        {fighter.bio}
+      </p>
+    </section>
+  )}
+
+  <!-- RIVAL -->
+  {opponent && combatId && (
+    <section class="mx-auto mt-10 max-w-4xl px-4 lg:px-10">
+      <a
+        href={`/combates/${combatId}`}
+        class="group relative flex items-center justify-between overflow-hidden rounded-2xl border border-theme-gold/30 bg-gradient-to-r from-pink-950/40 via-black/40 to-pink-950/40 px-4 py-4 transition-all duration-300 hover:border-theme-gold/60 hover:from-pink-950/60 hover:via-black/60 hover:to-pink-950/60 sm:px-6 sm:py-5"
+      >
+        <div class="flex items-center gap-2 sm:gap-4">
+          <img
+            src={`/images/fighters/cards/${fighter.id}.webp`}
+            alt={fighter.name}
+            class="h-14 w-14 rounded-xl object-cover object-top sm:h-16 sm:w-16"
+            loading="lazy"
+            decoding="async"
+            onerror="this.style.display='none'"
+          />
+          <span class="hidden font-cinzel text-base font-bold uppercase text-white sm:block">{fighter.name}</span>
+        </div>
+        <VersusIcon class="h-8 w-8 text-theme-gold drop-shadow-[0_0_12px_rgba(212,175,55,0.6)]" />
+        <div class="flex items-center gap-2 sm:gap-4">
+          <span class="hidden font-cinzel text-base font-bold uppercase text-white sm:block">{opponent.name}</span>
+          <img
+            src={`/images/fighters/cards/${opponent.id}.webp`}
+            alt={opponent.name}
+            class="h-14 w-14 rounded-xl object-cover object-top sm:h-16 sm:w-16"
+            loading="lazy"
+            decoding="async"
+            onerror="this.style.display='none'"
+          />
+        </div>
+      </a>
+    </section>
+  )}
+
+  <!-- GALERÍA -->
+  <section class="mx-auto mt-16 max-w-4xl px-4 lg:px-10">
+    <BoxerGallery id={id} name={fighter.name} />
+  </section>
+
+  <!-- CLIPS -->
+  {(fighter.clips || []).length > 0 && (
+    <section class="mx-auto mt-16 max-w-4xl px-4 lg:px-10">
+      <BoxerClipList clips={fighter.clips} externalPlayer={false} />
+      <div class="relative z-[101]">
+        <BoxerClipDrawer clips={fighter.clips} />
+      </div>
+    </section>
+  )}
+
+  <!-- ENTRENAMIENTO -->
+  {fighter.workout && (
+    <section class="mt-16">
+      <BoxerWorkout workout={fighter.workout} />
+    </section>
+  )}
+
+</Layout>
+
+<style>
+  .mask-fade-bottom {
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  }
+</style>

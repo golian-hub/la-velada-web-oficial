@@ -1,0 +1,37 @@
+---
+import { SOCIAL } from '@/consts/social'
+---
+
+<footer class="relative w-full pb-16 pt-8">
+  <div class="relative flex h-full flex-col items-center justify-center text-white/60">
+    <div class="mb-4 flex flex-row items-center justify-center gap-x-3">
+      {
+        SOCIAL.map(({ url, image, name, label }) => (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label ?? name}
+            class="flex items-center justify-center transition hover:scale-125 hover:text-white"
+          >
+            <image.logo />
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="pb-8 opacity-70">
+      <p class="text-center text-xs">
+        © 2026 La Velada del Año.<br />Todos los derechos reservados.
+      </p>
+      <p class="mt-2 text-center text-xs">
+        Desarrollado por <a
+          href="https://midu.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-white/60 underline transition hover:text-white">midu.dev</a
+        > y su comunidad.
+      </p>
+    </div>
+  </div>
+</footer>

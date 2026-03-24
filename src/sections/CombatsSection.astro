@@ -1,0 +1,130 @@
+---
+import { COMBATS } from '@/consts/combats'
+import { getBoxerById } from '@/lib/boxers'
+import SectionTitle from '@/components/SectionTitle.astro'
+import VersusIcon from '@/components/VersusIcon.astro'
+
+const orderedCombats = [...COMBATS].reverse()
+const mainEvent = orderedCombats[0]
+const otherCombats = orderedCombats.slice(1, 4)
+---
+
+<section class="relative mx-auto max-w-7xl px-4 py-16 pb-24">
+  <SectionTitle title="LOS COMBATES" class="mb-12 text-center" />
+
+  <!-- Main Event -->
+  {mainEvent && (() => {
+    const fighter1 = getBoxerById(mainEvent.fighters[0])
+    const fighter2 = getBoxerById(mainEvent.fighters[1])
+
+    return (
+      <div class="mb-10">
+        <a href={`/combates/${mainEvent.id}`} class="group block">
+          <div class="relative overflow-hidden rounded-2xl border-2 border-theme-gold/30 bg-gradient-to-br from-pink-950/50 to-theme-midnight/80 transition-all duration-500 hover:border-theme-gold/60 hover:shadow-[0_0_60px_rgba(199,168,107,0.15)]">
+            <div class="absolute left-4 top-4 z-20">
+              <span class="rounded-full bg-theme-gold/20 px-4 py-1.5 font-cinzel text-sm font-bold uppercase tracking-wider text-theme-gold">
+                MAIN EVENT
+              </span>
+            </div>
+
+            <div class="relative flex h-[350px] md:h-[420px]">
+              {/* Fighter 1 */}
+              <div class="relative h-full w-1/2 overflow-hidden duration-200 group-hover:scale-[1.02]">
+                <img
+                  src={`/images/fighters/cards/${fighter1?.id}.webp`}
+                  alt={fighter1?.name}
+                  class="h-full w-full object-cover object-top"
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.parentElement.style.display='none'"
+                />
+              </div>
+
+              {/* VS */}
+              <div class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <VersusIcon class="h-16 w-16 text-theme-gold drop-shadow-[0_0_30px_rgba(199,168,107,0.5)] md:h-24 md:w-24" />
+              </div>
+
+              {/* Fighter 2 */}
+              <div class="relative h-full w-1/2 overflow-hidden duration-200 group-hover:scale-[1.02]">
+                <img
+                  src={`/images/fighters/cards/${fighter2?.id}.webp`}
+                  alt={fighter2?.name}
+                  class="h-full w-full object-cover object-top"
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.parentElement.style.display='none'"
+                />
+              </div>
+            </div>
+
+            <p class="w-full px-8 py-6 text-center text-base leading-relaxed text-white/70 line-clamp-2">
+              {mainEvent.description}
+            </p>
+          </div>
+        </a>
+      </div>
+    )
+  })()}
+
+  <!-- Other Combats Preview -->
+  <div class="grid gap-6 md:grid-cols-3">
+    {otherCombats.map((combat) => {
+      const fighter1 = getBoxerById(combat.fighters[0])
+      const fighter2 = getBoxerById(combat.fighters[1])
+
+      return (
+        <a href={`/combates/${combat.id}`} class="group block">
+          <article class="overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all duration-300 hover:border-pink-500/30 hover:bg-white/10">
+            <div class="relative flex h-[220px] md:h-[260px]">
+              {/* Fighter 1 */}
+              <div class="relative h-full w-1/2 overflow-hidden duration-200 group-hover:scale-[1.02]">
+                <img
+                  src={`/images/fighters/cards/${fighter1?.id}.webp`}
+                  alt={fighter1?.name}
+                  class="h-full w-full object-cover object-top"
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.parentElement.style.display='none'"
+                />
+              </div>
+
+              {/* VS */}
+              <div class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <VersusIcon class="h-8 w-8 text-theme-gold/70 drop-shadow-lg md:h-12 md:w-12" />
+              </div>
+
+              {/* Fighter 2 */}
+              <div class="relative h-full w-1/2 overflow-hidden duration-200 group-hover:scale-[1.02]">
+                <img
+                  src={`/images/fighters/cards/${fighter2?.id}.webp`}
+                  alt={fighter2?.name}
+                  class="h-full w-full object-cover object-top"
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.parentElement.style.display='none'"
+                />
+              </div>
+            </div>
+
+            {/* Spacer for card bottom padding */}
+            <div class="h-2"></div>
+          </article>
+        </a>
+      )
+    })}
+  </div>
+
+  <!-- CTA -->
+  <div class="mt-12 text-center">
+    <a
+      href="/combates"
+      class="inline-flex items-center gap-2 rounded-lg border-2 border-theme-gold/50 bg-gradient-to-r from-pink-950/50 to-transparent px-8 py-4 font-cinzel text-base font-bold tracking-wider text-theme-gold transition-all duration-300 hover:scale-105 hover:border-theme-gold hover:from-pink-950/80 hover:shadow-[0_0_30px_rgba(199,168,107,0.3)]"
+    >
+      VER TODOS LOS COMBATES
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      </svg>
+    </a>
+  </div>
+</section>

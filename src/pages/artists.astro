@@ -1,0 +1,49 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import ArtistCard from '@/components/ArtistCard.astro'
+import { ARTISTS } from '@/consts/artists'
+
+export const prerender = true
+
+const title = 'Artistas - La Velada del Año VI'
+const description = 'Los artistas que actuarán en La Velada del Año VI. 25 de julio de 2026 en el Estadio de La Cartuja, Sevilla.'
+const canonical = 'https://www.infolavelada.com/artists'
+
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <section class="relative mx-auto mt-24 min-h-screen max-w-7xl px-4 pb-24">
+    <!-- Header -->
+    <div class="mb-16 text-center">
+      <h1 class="bg-gradient-to-r from-pink-400 to-yellow-300 bg-clip-text font-cinzel text-4xl font-bold text-transparent md:text-5xl">
+        ARTISTAS
+      </h1>
+      <p class="mt-4 text-lg text-white/60">
+        Los artistas que actuarán en La Velada del Año VI — 25 de julio de 2026, Sevilla
+      </p>
+    </div>
+
+    <!-- Artists Grid — placeholders hasta el anuncio oficial -->
+    <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <article class="flex-shrink-0">
+          <div class="relative h-64 w-full overflow-hidden rounded-xl border border-theme-gold/20 bg-theme-midnight/60 backdrop-blur-sm">
+            <div class="absolute inset-0 bg-gradient-to-b from-theme-navy/60 via-theme-midnight/80 to-black/90" />
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 px-3 text-center">
+              <div class="flex h-16 w-16 items-center justify-center rounded-full border border-theme-gold/30 bg-theme-gold/5">
+                <span class="font-cinzel text-3xl font-black text-theme-gold/60">?</span>
+              </div>
+              <p class="font-cinzel text-[10px] font-bold uppercase tracking-[0.2em] text-theme-gold/50">
+                Próximamente
+              </p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p class="mt-10 text-center font-cinzel text-xs tracking-widest text-white/30">
+      Los artistas se anunciarán próximamente
+    </p>
+  </section>
+</Layout>

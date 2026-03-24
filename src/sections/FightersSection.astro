@@ -1,0 +1,122 @@
+---
+import { FIGHTERS } from '@/consts/fighters'
+import { getBoxerById } from '@/lib/boxers'
+import SectionTitle from '@/components/SectionTitle.astro'
+
+// Get unique pairs to avoid showing both fighters in a combat
+const shownFighters = new Set<string>()
+const fightersToShow: typeof FIGHTERS = []
+
+for (const fighter of FIGHTERS) {
+  if (!shownFighters.has(fighter.id)) {
+    fightersToShow.push(fighter)
+    shownFighters.add(fighter.id)
+    if (fighter.versus) {
+      shownFighters.add(fighter.versus)
+    }
+  }
+}
+---
+
+<section class="relative mx-auto max-w-7xl px-4 py-16 pb-24">
+  <SectionTitle title="LOS LUCHADORES" class="mb-12 text-center" />
+
+  <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:gap-4">
+    {fightersToShow.map((fighter) => {
+      const isLeft = !!fighter.versus
+      return (
+        <a
+          href={`/luchador/${fighter.id}`}
+          data-id={fighter.id}
+          data-versus={fighter.versus || ''}
+          class={`fighter-poster group relative overflow-hidden rounded-xl ${isLeft ? 'poster-skew-left' : 'poster-skew-right'}`}
+        >
+          <div class="aspect-[3/4] w-full overflow-hidden">
+            <img
+              src={`/images/fighters/cards/${fighter.id}.webp`}
+              alt={fighter.name}
+              class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+              loading="lazy"
+              decoding="async"
+              onerror="this.parentElement.style.background='linear-gradient(135deg,#2d0a1e,#0a1024)'"
+            />
+          </div>
+
+          <!-- Gradient overlay bottom -->
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+
+          <!-- Gold border on hover -->
+          <div class="pointer-events-none absolute inset-0 rounded-xl border-2 border-theme-gold/0 transition-all duration-300 group-hover:border-theme-gold/70 group-hover:shadow-[inset_0_0_20px_rgba(199,168,107,0.1)]"></div>
+
+          <!-- Shine sweep -->
+          <div class="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-tr from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full"></div>
+
+          <!-- Name -->
+          <div class="absolute bottom-0 left-0 right-0 p-3">
+            <p class="font-cinzel text-center text-xs font-bold uppercase tracking-wider text-white drop-shadow-[0_1px_4px_rgba(0,0,0,1)] sm:text-sm">
+              {fighter.name}
+            </p>
+          </div>
+        </a>
+      )
+    })}
+  </div>
+
+  <!-- CTA -->
+  <div class="mt-12 text-center">
+    <a
+      href="/luchadores"
+      class="inline-flex items-center gap-2 rounded-lg border-2 border-theme-gold/50 bg-gradient-to-r from-pink-950/50 to-transparent px-8 py-4 font-cinzel text-base font-bold tracking-wider text-theme-gold transition-all duration-300 hover:scale-105 hover:border-theme-gold hover:from-pink-950/80 hover:shadow-[0_0_30px_rgba(199,168,107,0.3)]"
+    >
+      VER TODOS LOS LUCHADORES
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      </svg>
+    </a>
+  </div>
+</section>
+
+<style>
+  .poster-skew-left { transform: skew(1.5deg); }
+  .poster-skew-right { transform: skew(-1.5deg); }
+
+  .fighter-poster {
+    transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
+  }
+  .fighter-poster.dimmed {
+    opacity: 0.3;
+    filter: grayscale(1);
+    transform: scale(0.97) !important;
+  }
+  .fighter-poster.highlighted {
+    transform: scale(1.04) skew(0deg) !important;
+    z-index: 10;
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const posters = document.querySelectorAll('.fighter-poster')
+
+    posters.forEach((poster) => {
+      poster.addEventListener('mouseenter', () => {
+        const id = poster.getAttribute('data-id')
+        const versus = poster.getAttribute('data-versus')
+
+        posters.forEach((p) => {
+          if (p.getAttribute('data-id') === id || p.getAttribute('data-id') === versus) {
+            p.classList.add('highlighted')
+            p.classList.remove('dimmed')
+          } else {
+            p.classList.add('dimmed')
+            p.classList.remove('highlighted')
+          }
+        })
+      })
+
+      poster.addEventListener('mouseleave', () => {
+        posters.forEach((p) => p.classList.remove('dimmed', 'highlighted'))
+      })
+    })
+  })
+</script>

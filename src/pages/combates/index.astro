@@ -1,0 +1,156 @@
+---
+import { COMBATS } from '@/consts/combats'
+import { getBoxerById } from '@/lib/boxers'
+import Layout from '@/layouts/Layout.astro'
+import VersusIcon from '@/components/VersusIcon.astro'
+import SectionTitle from '@/components/SectionTitle.astro'
+
+export const prerender = true
+
+const title = 'Combates - La Velada del Año VI'
+const description =
+  'Todos los combates de La Velada del Año VI. 25 de julio de 2026 en el Estadio de La Cartuja, Sevilla.'
+const canonical = 'https://www.infolavelada.com/combates'
+
+const orderedCombats = [...COMBATS].reverse()
+
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <section class="relative mx-auto mt-24 min-h-screen max-w-5xl px-4 pb-24">
+    <!-- Header -->
+    <div class="mb-12 text-center">
+      <SectionTitle title="LOS COMBATES" />
+      <p class="mt-4 text-lg text-white/60">
+        La Velada del Año VI — 25 de julio de 2026, Estadio de La Cartuja, Sevilla
+      </p>
+    </div>
+
+    <!-- Combats List -->
+    <div class="flex flex-col gap-6">
+      {
+        orderedCombats.map((combat) => {
+          const fighter1 = getBoxerById(combat.fighters[0])
+          const fighter2 = getBoxerById(combat.fighters[1])
+          const isMainEvent = combat.type === 'main-event'
+          const isCoMainEvent = combat.type === 'co-main-event'
+
+          return (
+            <a href={`/combates/${combat.id}`} class="group block">
+              <article
+                class:list={[
+                  'relative overflow-hidden rounded-2xl border transition-all duration-300',
+                  isMainEvent
+                    ? 'border-theme-gold/50 bg-gradient-to-b from-yellow-950/40 to-theme-midnight hover:border-theme-gold'
+                    : isCoMainEvent
+                      ? 'border-pink-500/40 bg-gradient-to-b from-pink-950/30 to-theme-midnight hover:border-pink-500/70'
+                      : 'border-white/10 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.05]',
+                ]}
+              >
+                {/* Fighters layout */}
+                <div class="relative flex items-stretch justify-between md:px-8">
+                  {/* Badge + number overlay */}
+                  {(isMainEvent || isCoMainEvent) && (
+                    <div class="pointer-events-none absolute left-6 top-3 z-10">
+                      <span
+                        class:list={[
+                          'rounded-full px-3 py-1 font-cinzel text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-sm',
+                          isMainEvent
+                            ? 'bg-black/50 text-theme-gold border border-theme-gold/40'
+                            : 'bg-black/50 text-pink-300 border border-pink-400/40',
+                        ]}
+                      >
+                        {isMainEvent ? '★ MAIN EVENT' : 'CO-MAIN EVENT'}
+                      </span>
+                    </div>
+                  )}
+                  <div class="pointer-events-none absolute right-6 top-3 z-10">
+                    <span class="font-cinzel text-xs font-bold text-white/30 tracking-widest">
+                      #{String(combat.number).padStart(2, '0')}
+                    </span>
+                  </div>
+                  {/* Fighter 1 */}
+                  <div class="flex flex-1 flex-col items-center -mr-6 md:mr-0">
+                    <div class="relative w-full h-[240px] md:h-[320px]" style="-webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%, black 100%), linear-gradient(to bottom, transparent 0%, black 10%, black 85%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent 0%, black 20%, black 100%), linear-gradient(to bottom, transparent 0%, black 10%, black 85%, transparent 100%); mask-composite: intersect;">
+                      <img
+                        src={`/images/fighters/cards/${fighter1?.id}.webp`}
+                        alt={fighter1?.name}
+                        class="h-full w-full object-cover object-[right_top] transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
+                        onerror="this.style.opacity='0'"
+                      />
+                    </div>
+                    <p class:list={[
+                      'py-3 font-cinzel text-xs md:text-sm font-bold tracking-widest text-center uppercase',
+                      isMainEvent ? 'text-theme-gold/90' : 'text-white/70',
+                    ]}>
+                      {fighter1?.name}
+                    </p>
+                  </div>
+
+                    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none md:relative md:inset-auto md:translate-x-0 md:translate-y-0 md:flex md:flex-col md:items-center md:justify-center md:px-4 md:pb-10 md:shrink-0">
+                      <VersusIcon
+                        class:list={[
+                          'h-6 w-6 md:h-12 md:w-12 transition-colors duration-300',
+                          isMainEvent
+                            ? 'text-theme-gold group-hover:drop-shadow-[0_0_12px_rgba(199,168,107,0.6)]'
+                            : isCoMainEvent
+                              ? 'text-pink-400 group-hover:drop-shadow-[0_0_12px_rgba(236,72,153,0.5)]'
+                              : 'text-white/50 group-hover:text-white/80',
+                        ]}
+                      />
+                    </div>
+
+                  {/* Fighter 2 */}
+                  <div class="flex flex-1 flex-col items-center -ml-6 md:ml-0">
+                    <div class="relative w-full h-[240px] md:h-[320px]" style="-webkit-mask-image: linear-gradient(to left, transparent 0%, black 20%, black 100%), linear-gradient(to bottom, transparent 0%, black 10%, black 85%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(to left, transparent 0%, black 20%, black 100%), linear-gradient(to bottom, transparent 0%, black 10%, black 85%, transparent 100%); mask-composite: intersect;">
+                      <img
+                        src={`/images/fighters/cards/${fighter2?.id}.webp`}
+                        alt={fighter2?.name}
+                        class="h-full w-full object-cover object-[left_top] transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
+                        onerror="this.style.opacity='0'"
+                      />
+                    </div>
+                    <p class:list={[
+                      'py-3 font-cinzel text-xs md:text-sm font-bold tracking-widest text-center uppercase',
+                      isMainEvent ? 'text-theme-gold/90' : 'text-white/70',
+                    ]}>
+                      {fighter2?.name}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom bar */}
+                <div
+                  class:list={[
+                    'flex items-center justify-between gap-4 border-t px-5 py-3',
+                    isMainEvent
+                      ? 'border-theme-gold/20'
+                      : isCoMainEvent
+                        ? 'border-pink-500/20'
+                        : 'border-white/5',
+                  ]}
+                >
+                  <p class="truncate text-xs text-white/40">{combat.description}</p>
+                  <span
+                    class:list={[
+                      'shrink-0 rounded px-3 py-1 font-cinzel text-[10px] font-bold tracking-widest transition-all duration-300',
+                      isMainEvent
+                        ? 'border border-theme-gold/40 text-theme-gold group-hover:bg-theme-gold group-hover:text-black'
+                        : 'border border-white/15 text-white/50 group-hover:border-white/35 group-hover:text-white/90',
+                    ]}
+                  >
+                    VER →
+                  </span>
+                </div>
+              </article>
+            </a>
+          )
+        })
+      }
+    </div>
+  </section>
+</Layout>

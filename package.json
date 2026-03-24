@@ -1,0 +1,43 @@
+{
+  "name": "la-velada-del-ano-vi-web-oficial",
+  "type": "module",
+  "version": "0.0.2",
+  "scripts": {
+    "predev": "pnpm generate:blur-images",
+    "dev": "astro dev",
+    "prebuild": "pnpm generate:blur-images",
+    "build": "astro build",
+    "preview": "astro preview",
+    "start": "astro",
+    "lint": "eslint --ext .astro .",
+    "lint:fix": "eslint --ext .astro --fix .",
+    "generate:blur-images": "node scripts/generate-blur-placeholders.mjs",
+    "db:init": "node scripts/init-predictions-db.mjs",
+    "db:check": "node scripts/check-predictions-db.mjs",
+    "db:test": "node scripts/test-predictions.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.0",
+    "@astrojs/vercel": "9.0.4",
+    "@auth/core": "0.40.0",
+    "@libsql/client": "0.17.0",
+    "@lucide/astro": "0.575.0",
+    "tailwind-animations": "1.0.1",
+    "@tailwindcss/vite": "4.2.1",
+    "@vercel/analytics": "1.6.1",
+    "astro": "5.18.0",
+    "auth-astro": "4.2.0",
+    "canvas-confetti": "1.9.4",
+    "tailwindcss": "4.2.1"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "1.9.0",
+    "@typescript-eslint/parser": "8.56.1",
+    "eslint": "10.0.2",
+    "eslint-plugin-astro": "1.6.0",
+    "prettier": "3.8.1",
+    "prettier-plugin-astro": "0.14.1",
+    "prettier-plugin-tailwindcss": "0.7.2",
+    "sharp": "0.34.5"
+  }
+}

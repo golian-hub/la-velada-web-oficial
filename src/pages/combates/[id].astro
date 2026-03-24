@@ -1,0 +1,142 @@
+---
+import { COMBATS } from '@/consts/combats'
+import { countries } from '@/consts/countries'
+import { combate } from '@/consts/pageTitles'
+
+import Layout from '@/layouts/Layout.astro'
+import CombatVersus from '@/components/CombatVersus.astro'
+import BoxerCard from '@/components/BoxerCard.astro'
+import LiteYouTube from '@/components/LiteYouTube.astro'
+import SectionTitle from '@/components/SectionTitle.astro'
+import { getBoxerById } from '@/lib/boxers'
+import VersusIcon from '@/components/VersusIcon.astro'
+
+export const prerender = true
+
+export function getStaticPaths() {
+  return COMBATS.map((combat) => ({ params: { id: combat.id } }))
+}
+
+const { id } = Astro.params
+const combat = COMBATS.find((c) => c.id === id)
+if (!combat) return Astro.redirect('/404')
+
+const fighter1 = getBoxerById(combat?.fighters[0])
+const fighter2 = getBoxerById(combat?.fighters[1])
+
+const description = `Combate entre ${fighter1?.name} y ${fighter2?.name} en La Velada del Año VI de Ibai Llanos.`
+const canonical = `https://www.infolavelada.com/combates/${id}`
+
+const fighter1Country = countries.find((c) => c.id === fighter1?.country)
+const fighter2Country = countries.find((c) => c.id === fighter2?.country)
+---
+
+<Layout
+  title={combate(fighter1?.name, fighter2?.name)}
+  description={description}
+  canonical={canonical}
+>
+  <section data-combat-id={id} class="relative mx-auto mt-24 min-h-screen max-w-6xl p-6">
+    <CombatVersus id={id} />
+
+    <!-- Comparativa de luchadores -->
+    <div class="mx-auto mt-16 w-full max-w-3xl">
+      <!-- Título de la sección -->
+      <h2 class="mb-8 text-center font-cinzel text-xl font-bold tracking-widest text-theme-gold/80">
+        ESTADÍSTICAS
+      </h2>
+
+      <div class="grid grid-cols-3 divide-x divide-white/10 rounded-xl border border-white/10 bg-white/5 overflow-hidden">
+        <!-- Fila: Nombres -->
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="font-cinzel text-sm font-bold text-white text-center">{fighter1?.name}</p>
+        </div>
+        <div class="flex items-center justify-center px-4 py-3">
+          <VersusIcon class="h-6 w-6 text-theme-gold" />
+        </div>
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="font-cinzel text-sm font-bold text-white text-center">{fighter2?.name}</p>
+        </div>
+
+        <!-- Separador -->
+        <div class="col-span-3 h-px bg-white/10"></div>
+
+        <!-- Fila: Edad -->
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-sm font-semibold text-white/90">{fighter1?.age} <span class="text-xs font-normal text-white/50">años</span></p>
+        </div>
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-xs uppercase tracking-wider text-white/40">Edad</p>
+        </div>
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-sm font-semibold text-white/90">{fighter2?.age} <span class="text-xs font-normal text-white/50">años</span></p>
+        </div>
+
+        <!-- Fila: Altura -->
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-sm font-semibold text-white/90">{fighter1?.height} <span class="text-xs font-normal text-white/50">m</span></p>
+        </div>
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-xs uppercase tracking-wider text-white/40">Altura</p>
+        </div>
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-sm font-semibold text-white/90">{fighter2?.height} <span class="text-xs font-normal text-white/50">m</span></p>
+        </div>
+
+        <!-- Fila: Peso -->
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-sm font-semibold text-white/90">{fighter1?.weight} <span class="text-xs font-normal text-white/50">kg</span></p>
+        </div>
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-xs uppercase tracking-wider text-white/40">Peso</p>
+        </div>
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-sm font-semibold text-white/90">{fighter2?.weight} <span class="text-xs font-normal text-white/50">kg</span></p>
+        </div>
+
+        <!-- Fila: País -->
+        <div class="flex items-center justify-center gap-2 px-4 py-3">
+          {fighter1Country && (
+            <>
+              <img src={fighter1Country.image.src} alt={`Bandera de ${fighter1Country.name}`} class="h-auto w-6 rounded-sm shadow" />
+              <span class="text-xs text-white/60 [text-transform:none]">{fighter1Country.name}</span>
+            </>
+          )}
+        </div>
+        <div class="flex items-center justify-center px-4 py-3">
+          <p class="text-xs uppercase tracking-wider text-white/40">País</p>
+        </div>
+        <div class="flex items-center justify-center gap-2 px-4 py-3">
+          {fighter2Country && (
+            <>
+              <img src={fighter2Country.image.src} alt={`Bandera de ${fighter2Country.name}`} class="h-auto w-6 rounded-sm shadow" />
+              <span class="text-xs text-white/60 [text-transform:none]">{fighter2Country.name}</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      <!-- Descripción del combate -->
+      {combat?.description && (
+        <p class="mt-10 text-center text-sm leading-relaxed text-white/70 [text-transform:none]">
+          {combat.description}
+        </p>
+      )}
+    </div>
+
+    <!-- Video del combate -->
+    {
+      combat?.video && (
+        <div class="mx-auto mt-16 max-w-4xl px-5">
+          <SectionTitle class="pb-8" title={combat?.title} />
+          <LiteYouTube
+            videoId={combat?.video}
+            title={combat?.title || 'Combate'}
+            backgroundImage={`/images/combates/${combat?.id}.webp`}
+            withShadowImage={true}
+          />
+        </div>
+      )
+    }
+  </section>
+</Layout>

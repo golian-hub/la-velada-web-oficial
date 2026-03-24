@@ -1,0 +1,41 @@
+---
+import { ARTISTS } from '@/consts/artists'
+import SectionTitle from '@/components/SectionTitle.astro'
+---
+
+<section class="relative mx-auto max-w-7xl px-4 py-16 pb-24">
+  <SectionTitle title="ARTISTAS" class="mb-12 text-center" />
+
+  <!-- Placeholders: artistas por anunciar -->
+  <div class="relative">
+    <div class="flex gap-6 overflow-x-auto pb-6 scrollbar-thin scrollbar-track-white/5 scrollbar-thumb-theme-gold/50">
+      {Array.from({ length: 7 }).map((_, i) => (
+        <article class="flex-shrink-0">
+          <div class="relative h-64 w-48 overflow-hidden rounded-xl border border-theme-gold/20 bg-theme-midnight/60 backdrop-blur-sm">
+            <!-- Fondo con patrón y blur -->
+            <div class="absolute inset-0 bg-gradient-to-b from-theme-navy/60 via-theme-midnight/80 to-black/90" />
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 px-3 text-center">
+              <!-- Icono interrogación -->
+              <div class="flex h-16 w-16 items-center justify-center rounded-full border border-theme-gold/30 bg-theme-gold/5">
+                <span class="font-cinzel text-3xl font-black text-theme-gold/60">?</span>
+              </div>
+              <p class="font-cinzel text-[10px] font-bold uppercase tracking-[0.2em] text-theme-gold/50">
+                Próximamente
+              </p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <p class="mt-6 text-center font-cinzel text-xs tracking-widest text-white/30">
+    Los artistas se anunciarán próximamente
+  </p>
+</section>
+
+<style>
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+</style>
