@@ -13,88 +13,82 @@ const gallery = fighterGallery(id)
 const IMAGES_TO_LOAD = Math.min(gallery, 3)
 ---
 
-<div id="boxer-gallery" class={`grid gap-3 grid-rows-2 grid-cols-2`}>
-  {
-    Array.from({ length: IMAGES_TO_LOAD }).map((_, index) => {
-      const currentIndex = ++index
-      const href = `/images/fighters/gallery/${id}/${currentIndex}.webp`
+{
+  IMAGES_TO_LOAD > 0 && (
+    <div id="boxer-gallery" class={`grid gap-3 grid-rows-2 grid-cols-2`}>
+      {Array.from({ length: IMAGES_TO_LOAD }).map((_, index) => {
+        const currentIndex = ++index
+        const href = `/images/fighters/gallery/${id}/${currentIndex}.webp`
 
-      return (
-        <a
-          class:list={[
-            'boxer-image aspect-square transition hover:scale-105 hover:brightness-110',
-            'col-span-1 row-span-1',
-            'animate-fade-in animate-delay-[1000ms]',
-          ]}
-          href={href}
-          title={`Abrir imagen ${currentIndex} de la galería de ${name}`}
-        >
-          <figure class="h-full w-full">
-            <picture class="block h-full w-full">
-              <img
-                loading="lazy"
-                decoding="async"
-                class="aspect-square h-full w-full rounded object-cover object-top"
-                alt={`Imagen de la galería de fotos de ${name}`}
-                src={href}
-              />
-            </picture>
-          </figure>
-        </a>
-      )
-    })
-  }
-  <dialog
-    id="lightbox"
-    class="mx-auto my-auto h-screen w-full border-none bg-transparent outline-none ring-0 backdrop:bg-black/90 md:mt-20"
-  >
-    <div
-      class="animate-zoom-in mx-auto flex h-[80%] w-[80%] items-center justify-center overflow-hidden"
-    >
-      <div class="absolute h-full w-full bg-transparent" data-dialog-bg></div>
-      <p
-        class="font-primary pointer-events-none absolute bottom-0 text-center text-xs text-white/50 md:hidden"
+        return (
+          <a
+            class:list={[
+              'boxer-image aspect-square transition hover:scale-105 hover:brightness-110',
+              'col-span-1 row-span-1',
+              'animate-fade-in animate-delay-[1000ms]',
+            ]}
+            href={href}
+            title={`Abrir imagen ${currentIndex} de la galería de ${name}`}
+          >
+            <figure class="h-full w-full">
+              <picture class="block h-full w-full">
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-square h-full w-full rounded object-cover object-top"
+                  alt={`Imagen de la galería de fotos de ${name}`}
+                  src={href}
+                />
+              </picture>
+            </figure>
+          </a>
+        )
+      })}
+      <dialog
+        id="lightbox"
+        class="mx-auto my-auto h-screen w-full border-none bg-transparent outline-none ring-0 backdrop:bg-black/90 md:mt-20"
       >
-        Desliza para la siguiente
-      </p>
-      <button
-        data-btn-prev
-        class="group absolute left-[10px] z-10 hidden cursor-pointer select-none text-transparent transition hover:scale-125 motion-reduce:transition-none motion-reduce:hover:scale-100 md:relative md:left-0 md:flex md:items-center md:justify-center"
-        id="btn-prev"
-      >
-        <Icons.ChevronLeft
-          class="stroke-theme-cream group-hover:stroke-theme-gold h-20 w-20 bg-transparent fill-transparent"
-        />
-      </button>
-      <div class="z-8 relative h-fit rounded md:h-full">
-        <button
-          data-btn-close
-          id="btn-close"
-          type="button"
-          class="hover:text-theme-gold text-theme-cream absolute right-2 top-2 z-10 hidden cursor-pointer rounded bg-black/60 p-4 transition hover:scale-110 md:block"
-        >
-          <Icons.XIcon class="h-5 w-5" aria-hidden="true" fill="none" />
-        </button>
-        <img
-          loading="lazy"
-          decoding="async"
-          class="boxer-gallery-img z-8 h-fit rounded object-contain object-center md:h-full"
-          alt={`Imagen de la galería de fotos de ${name}`}
-          src={`/images/fighters/gallery/${id}/1.webp`}
-        />
-      </div>
-      <button
-        data-btn-next
-        class="group absolute right-[10px] z-10 hidden cursor-pointer select-none text-transparent transition hover:scale-125 motion-reduce:transition-none motion-reduce:hover:scale-100 md:relative md:right-0 md:flex md:items-center md:justify-center"
-        id="btn-next"
-      >
-        <Icons.ChevronRight
-          class="stroke-theme-cream group-hover:stroke-theme-gold h-20 w-20 bg-transparent fill-transparent"
-        />
-      </button>
+        <div class="animate-zoom-in mx-auto flex h-[80%] w-[80%] items-center justify-center overflow-hidden">
+          <div class="absolute h-full w-full bg-transparent" data-dialog-bg />
+          <p class="font-primary pointer-events-none absolute bottom-0 text-center text-xs text-white/50 md:hidden">
+            Desliza para la siguiente
+          </p>
+          <button
+            data-btn-prev
+            class="group absolute left-[10px] z-10 hidden cursor-pointer select-none text-transparent transition hover:scale-125 motion-reduce:transition-none motion-reduce:hover:scale-100 md:relative md:left-0 md:flex md:items-center md:justify-center"
+            id="btn-prev"
+          >
+            <Icons.ChevronLeft class="stroke-theme-cream group-hover:stroke-theme-gold h-20 w-20 bg-transparent fill-transparent" />
+          </button>
+          <div class="z-8 relative h-fit rounded md:h-full">
+            <button
+              data-btn-close
+              id="btn-close"
+              type="button"
+              class="hover:text-theme-gold text-theme-cream absolute right-2 top-2 z-10 hidden cursor-pointer rounded bg-black/60 p-4 transition hover:scale-110 md:block"
+            >
+              <Icons.XIcon class="h-5 w-5" aria-hidden="true" fill="none" />
+            </button>
+            <img
+              loading="lazy"
+              decoding="async"
+              class="boxer-gallery-img z-8 h-fit rounded object-contain object-center md:h-full"
+              alt={`Imagen de la galería de fotos de ${name}`}
+              src={`/images/fighters/gallery/${id}/1.webp`}
+            />
+          </div>
+          <button
+            data-btn-next
+            class="group absolute right-[10px] z-10 hidden cursor-pointer select-none text-transparent transition hover:scale-125 motion-reduce:transition-none motion-reduce:hover:scale-100 md:relative md:right-0 md:flex md:items-center md:justify-center"
+            id="btn-next"
+          >
+            <Icons.ChevronRight class="stroke-theme-cream group-hover:stroke-theme-gold h-20 w-20 bg-transparent fill-transparent" />
+          </button>
+        </div>
+      </dialog>
     </div>
-  </dialog>
-</div>
+  )
+}
 
 <script>
   import { $ } from '@/lib/dom-selector'

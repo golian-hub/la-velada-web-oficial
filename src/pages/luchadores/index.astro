@@ -37,7 +37,7 @@ const femaleFighters = FIGHTERS.filter((f) => f.gender === 'femenino')
             {femaleFighters.map((fighter) => {
               const country = countries.find((c) => c.id === fighter.country)
               return (
-                <a href={`/luchador/${fighter.id}`} class="group block">
+                <a href={`/luchador/${fighter.id}`} class="group block" data-astro-prefetch>
                   <article class="overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all duration-300 hover:border-pink-500/40 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(236,72,153,0.15)]">
                     <div class="relative overflow-hidden">
                       <img
@@ -84,7 +84,7 @@ const femaleFighters = FIGHTERS.filter((f) => f.gender === 'femenino')
             {maleFighters.map((fighter) => {
               const country = countries.find((c) => c.id === fighter.country)
               return (
-                <a href={`/luchador/${fighter.id}`} class="group block">
+                <a href={`/luchador/${fighter.id}`} class="group block" data-astro-prefetch>
                   <article class="overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all duration-300 hover:border-theme-gold/40 hover:bg-white/8 hover:shadow-[0_0_20px_rgba(199,168,107,0.15)]">
                     <div class="relative overflow-hidden">
                       <img

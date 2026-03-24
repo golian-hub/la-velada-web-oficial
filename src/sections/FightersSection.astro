@@ -27,6 +27,7 @@ for (const fighter of FIGHTERS) {
       return (
         <a
           href={`/luchador/${fighter.id}`}
+          data-astro-prefetch="hover"
           data-id={fighter.id}
           data-versus={fighter.versus || ''}
           class={`fighter-poster group relative overflow-hidden rounded-xl ${isLeft ? 'poster-skew-left' : 'poster-skew-right'}`}

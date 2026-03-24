@@ -19,6 +19,11 @@ export default defineConfig({
 
   adapter: vercel(),
 
+  prefetch: {
+    defaultStrategy: 'viewport',
+    prefetchAll: false,
+  },
+
   integrations: [sitemap(), auth()],
 
   site: 'https://www.infolavelada.com/',

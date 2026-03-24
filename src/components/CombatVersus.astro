@@ -18,6 +18,7 @@ const fighter2 = FIGHTERS.find((f) => f.id === combat?.fighters[1])
     <a
       class="block h-full w-full"
       href={`/luchador/${fighter1?.id}`}
+      data-astro-prefetch="hover"
     >
       <img
         src={`/images/fighters/cards/${fighter1?.id}.webp`}
@@ -55,7 +56,7 @@ const fighter2 = FIGHTERS.find((f) => f.id === combat?.fighters[1])
 
   <!-- Segundo Combatiente -->
   <div class="relative h-full w-1/2 overflow-hidden">
-    <a class="block h-full w-full" href={`/luchador/${fighter2?.id}`}>
+    <a class="block h-full w-full" href={`/luchador/${fighter2?.id}`} data-astro-prefetch="hover">
       <img
         src={`/images/fighters/cards/${fighter2?.id}.webp`}
         alt={`Imagen de ${fighter2?.name}`}

@@ -14,8 +14,12 @@ import { fixedTitle } from '@/consts/pageTitles'
 import { COMBATS } from '@/consts/combats'
 import { getBoxerById } from '@/lib/boxers'
 import { countries } from '@/consts/countries'
+import { fighterGallery } from '@/utils/get-image-count'
 
 export const prerender = true
+
+// Cache agresivo en CDN si el prerender fallase por el auth middleware de Astro
+Astro.response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=86400')
 
 export function getStaticPaths() {
   return FIGHTERS.map((fighter) => ({
@@ -28,6 +32,8 @@ if (!id) return Astro.redirect('/404')
 
 const fighter = getBoxerById(id)
 if (!fighter) return Astro.redirect('/404')
+
+const galleryCount = fighterGallery(id)
 
 const combat = COMBATS.find((combat) => combat.fighters.includes(id))
 const combatId = combat?.id
@@ -60,6 +66,7 @@ const country = countries.find((c) => c.id === fighter.country)
         transition:name={`image-${id}`}
         onerror={`this.style.display='none'; document.getElementById('fallback-${id}').style.display='flex'`}
         fetchpriority="high"
+        loading="eager"
         decoding="async"
       />
       <!-- Fallback -->
@@ -73,15 +80,14 @@ const country = countries.find((c) => c.id === fighter.country)
             {fighter.name.split(' ').map((w: string) => w[0]).slice(0, 2).join('')}
           </span>
         </div>
-        <p class="mt-6 font-cinzel text-lg font-bold text-theme-gold">{fighter.name}</p>
       </div>
     </div>
 
     <!-- Info del luchador -->
-    <div class="flex w-full flex-col gap-6 pb-8 lg:w-1/2 lg:pb-16">
+    <div class="flex w-full flex-col gap-6 pb-8 lg:w-1/2 lg:pb-16 lg:pt-48">
+
       <!-- Nombre -->
       <div>
-        <p class="font-cinzel text-sm uppercase tracking-[0.3em] text-theme-gold/60">{fighter.realName}</p>
         <h1 class="font-cinzel text-4xl font-black uppercase tracking-wide text-white lg:text-5xl">{fighter.name}</h1>
         {country && (
           <div class="mt-2 flex items-center gap-2">
@@ -169,9 +175,11 @@ const country = countries.find((c) => c.id === fighter.country)
   )}
 
   <!-- GALERÍA -->
-  <section class="mx-auto mt-16 max-w-4xl px-4 lg:px-10">
-    <BoxerGallery id={id} name={fighter.name} />
-  </section>
+  {galleryCount > 0 && (
+    <section class="mx-auto mt-16 max-w-4xl px-4 lg:px-10">
+      <BoxerGallery id={id} name={fighter.name} />
+    </section>
+  )}
 
   <!-- CLIPS -->
   {(fighter.clips || []).length > 0 && (

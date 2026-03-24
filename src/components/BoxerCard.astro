@@ -17,6 +17,7 @@ const placeholder = getFighterPlaceholder(name, id)
   class={`boxer-card ${extraClass} inline-block transition-all w-28 sm:w-32 md:w-28 lg:w-32 xl:w-36 2xl:w-40 group relative rounded-lg duration-300 hover:scale-110 hover:shadow-lg hover:z-20 focus-visible:scale-110 focus-visible:shadow-lg focus-visible:z-20 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-gold`}
   aria-label={`Ver perfil del boxeador ${name}`}
   href={`/luchador/${id}`}
+  data-astro-prefetch="hover"
   data-id={id}
   data-versus={versus}
 >
