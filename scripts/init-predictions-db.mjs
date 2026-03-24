@@ -8,6 +8,10 @@ const turso = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN,
 })
 
+function getBoxerById(boxerId) {
+  return FIGHTERS.find((b) => b.id === boxerId)
+}
+
 async function initPredictionsDatabase() {
   try {
     console.log('🚀 Inicializando base de datos de predicciones...')
