@@ -16,7 +16,7 @@ function isActive(href: string): boolean {
 }
 ---
 
-<header class="fixed left-0 right-0 top-0 z-50">
+<header id="site-header" class="fixed left-0 right-0 top-0 z-50 transition-all duration-300">
   <nav
     class="relative flex items-center justify-between px-4 pt-0 transition-all duration-300 md:px-8"
     id="main-nav"
@@ -43,7 +43,7 @@ function isActive(href: string): boolean {
             <a
               href={link.href}
               class:list={[
-                'relative rounded-lg px-2 py-1 font-cinzel text-sm font-semibold tracking-wider transition-all duration-300 md:px-3 lg:text-xl',
+                'relative whitespace-nowrap rounded-lg px-2 py-1 font-cinzel text-sm font-semibold tracking-wider transition-all duration-300 md:px-3',
                 isActive(link.href)
                   ? 'text-theme-gold'
                   : 'text-white/70 hover:text-white hover:bg-white/10',
@@ -129,6 +129,15 @@ function isActive(href: string): boolean {
 
 
 <style>
+  #site-header.is-scrolled {
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 16, 36, 0.92) 0%,
+      rgba(10, 16, 36, 0.0) 100%
+    );
+    backdrop-filter: blur(8px);
+  }
+
   #nav-links-container.is-scrolled {
     background: linear-gradient(
       90deg,
@@ -183,12 +192,11 @@ function isActive(href: string): boolean {
       })
     })
 
-    // Add backdrop blur and gradient on scroll to the links container
+    // Add backdrop blur and gradient on scroll to the nav header and links container
     const handleScroll = () => {
-      const container = document.getElementById('nav-links-container')
-      if (container) {
-        container.classList.toggle('is-scrolled', window.scrollY > 10)
-      }
+      const scrolled = window.scrollY > 10
+      document.getElementById('site-header')?.classList.toggle('is-scrolled', scrolled)
+      document.getElementById('nav-links-container')?.classList.toggle('is-scrolled', scrolled)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
