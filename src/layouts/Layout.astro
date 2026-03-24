@@ -126,5 +126,28 @@ const {
     <main id="main-content">
       <slot />
     </main>
+
+    <script is:inline>
+      (() => {
+        const titleStyle = 'font-weight: bold; font-size: 18px; color: #ffbd00; text-shadow: 1px 1px 0px #0a1024;';
+        const infoStyle = 'font-size: 12px; color: #3b82f6; font-family: monospace;';
+        const borderStyle = 'color: #1e293b; font-weight: bold;';
+
+        console.log(
+          '%c██████████████████████████████████████████████████████████\n' +
+          '%c 🚀 LA VELADA VI - PERFORMANCE PROOF OF CONCEPT 🚀 \n' +
+          '%c Architecture cloned, optimized, and deployed by: Cristian Osorno "Crisos" \n' +
+          '%c Date of deployment: ' + new Date().toISOString().split('T')[0] + ' \n' +
+          '%c Status: Ready for high-concurrency traffic spikes. \n' +
+          '%c██████████████████████████████████████████████████████████',
+          borderStyle,
+          titleStyle,
+          infoStyle,
+          infoStyle,
+          infoStyle,
+          borderStyle
+        );
+      })();
+    </script>
   </body>
 </html>
