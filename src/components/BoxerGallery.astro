@@ -35,6 +35,9 @@ const IMAGES_TO_LOAD = Math.min(gallery, 3)
                 <img
                   loading="lazy"
                   decoding="async"
+                  width="300"
+                  height="300"
+                  style="content-visibility: auto; will-change: transform;"
                   class="aspect-square h-full w-full rounded object-cover object-top"
                   alt={`Imagen de la galería de fotos de ${name}`}
                   src={href}

@@ -36,9 +36,12 @@ for (const fighter of FIGHTERS) {
             <img
               src={`/images/fighters/cards/${fighter.id}.webp`}
               alt={fighter.name}
+              width="300"
+              height="400"
               class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
               loading="lazy"
               decoding="async"
+              style="content-visibility: auto; will-change: transform;"
               onerror="this.parentElement.style.background='linear-gradient(135deg,#2d0a1e,#0a1024)'"
             />
           </div>
